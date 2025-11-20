@@ -13,8 +13,8 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Saare URLs par allow karo
-                        .allowedOrigins("http://localhost:3000") // Frontend URL
+                registry.addMapping("/**")
+                        .allowedOriginPatterns("*") // ✅ CHANGE: Sabhi websites (Vercel) ko allow kar diya
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
