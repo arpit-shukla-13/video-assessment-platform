@@ -1,0 +1,13 @@
+<!-- public/silent-check-sso.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Silent Check SSO</title>
+</head>
+<body>
+    <script>
+        // Keycloak ko batata hai ki silent check complete ho gaya
+        parent.postMessage(location.href, location.origin);
+    </script>
+</body>
+</html>

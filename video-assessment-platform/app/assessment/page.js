@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { CheckCircle, AlertCircle, FileText } from 'lucide-react';
-import { useRouter } from 'next/navigation'; // Asli Router
+import { useRouter } from 'next/navigation';
 
 const AssessmentPage = () => {
   const router = useRouter();
@@ -18,7 +18,8 @@ const AssessmentPage = () => {
   // --- REAL API CALL TO SPRING BOOT ---
   const submitAssessmentToBackend = async (data) => {
     try {
-      const response = await fetch('http://localhost:8080/api/assessment/submit', {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${apiBaseUrl}/api/assessment/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +36,7 @@ const AssessmentPage = () => {
       return result;
     } catch (error) {
       console.error("Error submitting to backend:", error);
-      alert("Connection Failed! Make sure Spring Boot is running on port 8080.");
+      alert(`Connection Failed! Make sure Spring Boot is running on ${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'}`);
       throw error;
     }
   };

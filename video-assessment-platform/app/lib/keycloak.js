@@ -1,10 +1,10 @@
 import Keycloak from 'keycloak-js';
 
-// Keycloak ka configuration
+// Keycloak ka configuration - Environment variables se
 const keycloakConfig = {
-  url: 'http://localhost:9000', // Tumhara Keycloak URL
-  realm: 'talentvisio',         // Jo Realm tumne banaya
-  clientId: 'nextjs-app',       // Jo Client ID tumne di
+  url: process.env.NEXT_PUBLIC_KEYCLOAK_URL || 'http://localhost:9000',
+  realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM || 'talentvisio',
+  clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || 'nextjs-app',
 };
 
 // Singleton instance (taaki baar-baar naya connection na bane)

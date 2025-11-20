@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Video, Shield, Clock, ArrowRight, PlayCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation'; // Asli Router import
+import { useRouter } from 'next/navigation';
 
 const LandingPage = () => {
   const router = useRouter();

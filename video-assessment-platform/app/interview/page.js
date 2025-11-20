@@ -2,19 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Camera, Clock, LogOut, Play, User, Mic } from 'lucide-react';
-
-// --- REAL APP INSTRUCTIONS ---
-// Local VS Code mein niche wali line UNCOMMENT karna aur mock code hata dena:
-// import { useRouter } from 'next/navigation';
-
-// --- MOCK FOR PREVIEW (Yahan chalne ke liye) ---
-const mockRouter = {
-  push: (path) => {
-    alert(`Navigating to: ${path}`);
-  }
-};
-const useRouter = () => mockRouter;
-// ---------------------------
+import { useRouter } from 'next/navigation';
 
 const VideoInterviewPage = () => {
   const router = useRouter();

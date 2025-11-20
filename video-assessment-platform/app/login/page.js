@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Video } from 'lucide-react';
-import { getKeycloakInstance } from '../lib/keycloak'; // Local lib import
+import { getKeycloakInstance } from '../lib/keycloak';
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,7 @@ const LoginPage = () => {
           const authenticated = await kc.init({ 
             onLoad: 'check-sso',
             pkceMethod: 'S256',
-            silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html' 
+            silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`
           });
           
           setIsInitialized(true);
@@ -51,13 +51,17 @@ const LoginPage = () => {
     
     if (kc) {
       try {
+        // Environment variable se redirect URI lo
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        
         // User ko Keycloak server par redirect karo
         await kc.login({ 
-          redirectUri: 'http://localhost:3000/dashboard' 
+          redirectUri: `${appUrl}/dashboard`
         });
       } catch (err) {
         console.error("Login Failed", err);
-        alert("Could not connect to Keycloak server. Make sure it is running on port 9000.");
+        const keycloakUrl = process.env.NEXT_PUBLIC_KEYCLOAK_URL || 'http://localhost:9000';
+        alert(`Could not connect to Keycloak server. Make sure it is running on ${keycloakUrl}`);
         setIsLoading(false);
       }
     } else {
@@ -98,6 +102,9 @@ const LoginPage = () => {
           
           <div className="mt-6 text-xs text-gray-400 border-t pt-4">
             <p>Secured by Keycloak (OAuth2 / OIDC)</p>
+            <p className="mt-1 text-[10px]">
+              Server: {process.env.NEXT_PUBLIC_KEYCLOAK_URL || 'http://localhost:9000'}
+            </p>
           </div>
         </div>
       </div>

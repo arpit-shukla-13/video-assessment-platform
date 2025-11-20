@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Video, FileText, AlertCircle, LogOut, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { getKeycloakInstance } from '../lib/keycloak'; // Local lib import
+import { getKeycloakInstance } from '../lib/keycloak';
 
 const Dashboard = () => {
   const router = useRouter();
@@ -24,31 +24,31 @@ const Dashboard = () => {
         if (authenticated) {
           setupSession(kc);
         } else {
-            // Agar login nahi hai, to Login page par bhejo
-            router.push('/login');
+          // Agar login nahi hai, to Login page par bhejo
+          router.push('/login');
         }
       } catch (error) {
         // Agar pehle se initialized hai (refresh case), toh session set karo
         if (error?.message?.includes('only be initialized once')) {
-             if (kc.authenticated) {
-                 setupSession(kc);
-             } else {
-                 router.push('/login');
-             }
+          if (kc.authenticated) {
+            setupSession(kc);
+          } else {
+            router.push('/login');
+          }
         } else {
-             console.error("Auth Failed", error);
+          console.error("Auth Failed", error);
         }
       }
     };
 
     const setupSession = (kc) => {
-        setIsAuthenticated(true);
-        if (typeof window !== 'undefined') {
-            // Token save kar lo taaki backend call mein use ho sake
-            localStorage.setItem('user_token', kc.token);
-        }
-        const name = kc.tokenParsed?.name || kc.tokenParsed?.preferred_username;
-        setUserName(name || 'Candidate');
+      setIsAuthenticated(true);
+      if (typeof window !== 'undefined') {
+        // Token save kar lo taaki backend call mein use ho sake
+        localStorage.setItem('user_token', kc.token);
+      }
+      const name = kc.tokenParsed?.name || kc.tokenParsed?.preferred_username;
+      setUserName(name || 'Candidate');
     };
 
     checkAuth();
@@ -56,10 +56,11 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     const kc = getKeycloakInstance();
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     // Logout karke login page par wapas bhejo
-    kc.logout({ redirectUri: 'http://localhost:3000/login' });
+    kc.logout({ redirectUri: `${appUrl}/login` });
     if (typeof window !== 'undefined') {
-        localStorage.clear();
+      localStorage.clear();
     }
   };
 
