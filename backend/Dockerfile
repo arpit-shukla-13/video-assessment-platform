@@ -1,12 +1,12 @@
-# Stage 1: Build the application
-FROM maven:3.8.5-openjdk-17 AS build
+# Build Stage
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run the application
-FROM openjdk:17-jdk-slim
+# Run Stage
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar backend.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "backend.jar"]
+ENTRYPOINT ["java","-jar","backend.jar"]
