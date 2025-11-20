@@ -10,39 +10,38 @@ const LoginPage = () => {
 
   // 1. Check karo agar user pehle se logged in hai
   useEffect(() => {
-    const initKeycloak = async () => {
-      // Server-side rendering check
-      if (typeof window === 'undefined') return;
+  const initKeycloak = async () => {
+    if (typeof window === 'undefined') return;
 
-      const kc = getKeycloakInstance();
-      
-      if (kc && !isInitialized) {
-        try {
-          const authenticated = await kc.init({ 
-            onLoad: 'check-sso',
-            pkceMethod: 'S256',
-            silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`
-          });
-          
+    const kc = getKeycloakInstance();
+    
+    if (kc && !isInitialized) {
+      try {
+        // SILENT CHECK HATA DO - Simple init use karo
+        const authenticated = await kc.init({ 
+          onLoad: 'check-sso'
+          // ❌ silentCheckSsoRedirectUri: remove this line temporarily
+        });
+        
+        setIsInitialized(true);
+        
+        if (authenticated) {
+          window.location.href = '/dashboard';
+        }
+      } catch (err) {
+        if (err?.message?.includes('only be initialized once')) {
           setIsInitialized(true);
-          
-          if (authenticated) {
-            // Agar user logged in hai to dashboard bhejo
-            window.location.href = '/dashboard';
-          }
-        } catch (err) {
-          // Agar "Already initialized" error aaye to ignore karo
-          if (err?.message?.includes('only be initialized once')) {
-             setIsInitialized(true);
-          } else {
-             console.error("Keycloak Init Error:", err);
-          }
+        } else {
+          console.error("Keycloak Init Error:", err);
+          // Error aane par bhi continue karo
+          setIsInitialized(true);
         }
       }
-    };
+    }
+  };
 
-    initKeycloak();
-  }, [isInitialized]);
+  initKeycloak();
+}, [isInitialized]);
 
   // 2. Login Button Handler
   const handleLogin = async () => {
