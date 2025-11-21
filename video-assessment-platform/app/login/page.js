@@ -50,12 +50,11 @@ const LoginPage = () => {
     
     if (kc) {
       try {
-        // Environment variable se redirect URI lo
+        
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
         
-        // User ko Keycloak server par redirect karo
         await kc.login({ 
-          redirectUri: window.location.origin + '/dashboard' 
+          redirectUri: `${appUrl}/dashboard` 
         });
       } catch (err) {
         console.error("Login Failed", err);

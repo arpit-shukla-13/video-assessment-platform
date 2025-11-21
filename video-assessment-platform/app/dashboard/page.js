@@ -59,7 +59,7 @@ const Dashboard = () => {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
     kc.logout({ 
-      redirectUri: window.location.origin + '/login' 
+      redirectUri: `${appUrl}/login` 
     });
     if (typeof window !== 'undefined') {
       localStorage.clear();
