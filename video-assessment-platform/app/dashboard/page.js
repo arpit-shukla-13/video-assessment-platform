@@ -24,11 +24,9 @@ const Dashboard = () => {
         if (authenticated) {
           setupSession(kc);
         } else {
-          // Agar login nahi hai, to Login page par bhejo
           router.push('/login');
         }
       } catch (error) {
-        // Agar pehle se initialized hai (refresh case), toh session set karo
         if (error?.message?.includes('only be initialized once')) {
           if (kc.authenticated) {
             setupSession(kc);
@@ -44,7 +42,6 @@ const Dashboard = () => {
     const setupSession = (kc) => {
       setIsAuthenticated(true);
       if (typeof window !== 'undefined') {
-        // Token save kar lo taaki backend call mein use ho sake
         localStorage.setItem('user_token', kc.token);
       }
       const name = kc.tokenParsed?.name || kc.tokenParsed?.preferred_username;

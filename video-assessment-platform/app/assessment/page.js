@@ -46,7 +46,7 @@ const AssessmentPage = () => {
     setLoading(true);
     
     try {
-      // Backend ko data bhej rahe hain
+      
       await submitAssessmentToBackend(formData);
       
       setLoading(false);

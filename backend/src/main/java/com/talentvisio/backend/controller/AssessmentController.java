@@ -9,12 +9,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/assessment")
-@CrossOrigin(origins = "http://localhost:3000") // Allow Next.js Frontend
+@CrossOrigin(origins = "http://localhost:3000")
 public class AssessmentController {
 
     @PostMapping("/submit")
     public ResponseEntity<?> submitAssessment(@RequestBody AssessmentSubmission submission) {
-        // Abhi ke liye hum data bas Console mein print karenge check karne ke liye
         System.out.println("--- New Assessment Received ---");
         System.out.println("Q1 Answer: " + submission.getQ1());
         System.out.println("Q2 Answer: " + submission.getQ2());

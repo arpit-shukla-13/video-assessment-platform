@@ -8,7 +8,6 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // 1. Check karo agar user pehle se logged in hai
   useEffect(() => {
   const initKeycloak = async () => {
     if (typeof window === 'undefined') return;
@@ -17,10 +16,8 @@ const LoginPage = () => {
     
     if (kc && !isInitialized) {
       try {
-        // SILENT CHECK HATA DO - Simple init use karo
         const authenticated = await kc.init({ 
           onLoad: 'check-sso'
-          // ❌ silentCheckSsoRedirectUri: remove this line temporarily
         });
         
         setIsInitialized(true);
@@ -33,7 +30,6 @@ const LoginPage = () => {
           setIsInitialized(true);
         } else {
           console.error("Keycloak Init Error:", err);
-          // Error aane par bhi continue karo
           setIsInitialized(true);
         }
       }

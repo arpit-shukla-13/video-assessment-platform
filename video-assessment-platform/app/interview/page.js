@@ -14,7 +14,7 @@ const VideoInterviewPage = () => {
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes (120 seconds)
   const [isInterviewActive, setIsInterviewActive] = useState(false);
 
-  // Camera start karne ka function
+  // function to start camera and microphone
   const startCamera = async () => {
     try {
       setError(null);
@@ -31,7 +31,7 @@ const VideoInterviewPage = () => {
     }
   };
 
-  // Camera stop karne ka function (Cleanup)
+  // function to stop camera and microphone (Cleanup)
   const stopCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const tracks = videoRef.current.srcObject.getTracks();
@@ -41,7 +41,7 @@ const VideoInterviewPage = () => {
     }
   };
 
-  // Component unmount hone par camera band karo
+  // Cleanup on component unmount
   useEffect(() => {
     return () => stopCamera();
   }, []);
@@ -61,7 +61,7 @@ const VideoInterviewPage = () => {
 
   const handleSessionEnd = () => {
     stopCamera();
-    // Agla step: Assessment Form
+    // Next step: Assessment Form
     router.push('/assessment');
   };
 
