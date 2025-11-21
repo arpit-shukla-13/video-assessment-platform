@@ -57,8 +57,10 @@ const Dashboard = () => {
   const handleLogout = () => {
     const kc = getKeycloakInstance();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    // Logout karke login page par wapas bhejo
-    kc.logout({ redirectUri: `${appUrl}/login` });
+    
+    kc.logout({ 
+      redirectUri: window.location.origin + '/login' 
+    });
     if (typeof window !== 'undefined') {
       localStorage.clear();
     }

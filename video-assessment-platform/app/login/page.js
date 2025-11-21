@@ -55,7 +55,7 @@ const LoginPage = () => {
         
         // User ko Keycloak server par redirect karo
         await kc.login({ 
-          redirectUri: `${appUrl}/dashboard`
+          redirectUri: window.location.origin + '/dashboard' 
         });
       } catch (err) {
         console.error("Login Failed", err);
