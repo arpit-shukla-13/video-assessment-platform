@@ -20,7 +20,7 @@ const LandingPage = () => {
                 <Video className="h-6 w-6 text-white" />
               </div>
               <span className="font-bold text-xl tracking-tight text-gray-900">
-                Talent<span className="text-indigo-600">Visio</span>
+                Aalent<span className="text-indigo-600">Visio</span>
               </span>
             </div>
 
