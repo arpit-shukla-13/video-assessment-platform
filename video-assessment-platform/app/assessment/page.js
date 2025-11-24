@@ -1,4 +1,5 @@
 "use client";
+// Force update for Vercel
 
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, FileText, Loader2, AlertCircle } from 'lucide-react';
