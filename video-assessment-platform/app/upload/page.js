@@ -41,7 +41,8 @@ const UploadResumePage = () => {
 
     try {
       // Backend API Call (Localhost 8080)
-      const response = await fetch('http://localhost:8080/api/resume/upload', {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${apiBaseUrl}/api/resume/upload`, {
         method: 'POST',
         body: formData, // Content-Type header mat lagana, browser khud set karega boundary ke saath
       });
