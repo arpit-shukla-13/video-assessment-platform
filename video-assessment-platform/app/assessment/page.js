@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import { CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CheckCircle, FileText, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const AssessmentPage = () => {
@@ -9,62 +9,62 @@ const AssessmentPage = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   
-  const [formData, setFormData] = useState({
-    q1: '',
-    q2: [],
-    q3: ''
-  });
+  // State questions aur answers ko store karne ke liye
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState({}); // Dynamic object: { 0: "Option A", 1: "Option C" }
 
-  // --- REAL API CALL TO SPRING BOOT ---
-  const submitAssessmentToBackend = async (data) => {
-    try {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-      const response = await fetch(`${apiBaseUrl}/api/assessment/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit assessment');
+  // --- 1. Load Questions from LocalStorage ---
+  useEffect(() => {
+    const storedData = localStorage.getItem('current_assessment_questions');
+    
+    if (storedData) {
+      try {
+        // Backend se data string format me aaya tha, usse JSON banayenge
+        const parsedData = JSON.parse(storedData);
+        
+        // Check karenge ki questions sahi format me hain ya nahi
+        if (parsedData.technicalQuestions && Array.isArray(parsedData.technicalQuestions)) {
+            setQuestions(parsedData.technicalQuestions);
+        } else {
+            console.error("Format mismatch or empty questions", parsedData);
+            // Agar format galat hai to wapas upload pe bhej do
+             alert("Error loading quiz data. Please upload resume again.");
+             router.push('/upload');
+        }
+      } catch (e) {
+        console.error("JSON Parse Error", e);
       }
-
-      const result = await response.json();
-      console.log("Backend Response:", result);
-      return result;
-    } catch (error) {
-      console.error("Error submitting to backend:", error);
-      alert(`Connection Failed! Make sure Spring Boot is running on ${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'}`);
-      throw error;
+    } else {
+        // Agar koi data nahi hai to wapas upload page par bhejo
+        alert("No assessment found. Please upload resume first.");
+        router.push('/upload');
     }
+  }, [router]);
+
+  // --- 2. Handle Answer Selection ---
+  const handleOptionSelect = (questionIndex, selectedOption) => {
+    setAnswers(prev => ({
+        ...prev,
+        [questionIndex]: selectedOption
+    }));
   };
 
+  // --- 3. Submit Logic ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
-    try {
-      
-      await submitAssessmentToBackend(formData);
-      
-      setLoading(false);
-      setSubmitted(true);
-    } catch (err) {
-      setLoading(false);
-    }
+    // Abhi hum Backend API call simulate kar rahe hain
+    // Kyunki abhi humne "Save Answers" API nahi banayi hai
+    console.log("Submitting Answers:", answers);
+
+    setTimeout(() => {
+        setLoading(false);
+        setSubmitted(true);
+    }, 1500);
   };
 
-  const handleCheckbox = (val) => {
-    setFormData(prev => {
-      const newQ2 = prev.q2.includes(val) 
-        ? prev.q2.filter(item => item !== val)
-        : [...prev.q2, val];
-      return { ...prev, q2: newQ2 };
-    });
-  };
-
+  // --- 4. Render Success Screen ---
   if (submitted) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -74,7 +74,7 @@ const AssessmentPage = () => {
           </div>
           <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Submitted!</h2>
           <p className="text-gray-600 mb-8">
-            Your answers have been successfully sent to the Spring Boot Backend.
+            Your answers have been successfully recorded. Our AI is evaluating your response.
           </p>
           <button 
             onClick={() => router.push('/dashboard')}
@@ -87,6 +87,17 @@ const AssessmentPage = () => {
     );
   }
 
+  // --- 5. Loading State ---
+  if (questions.length === 0) {
+      return (
+          <div className="min-h-screen flex items-center justify-center bg-gray-50">
+              <Loader2 className="animate-spin text-indigo-600" size={40} />
+              <p className="ml-4 text-gray-600 font-medium">Preparing your personalized questions...</p>
+          </div>
+      )
+  }
+
+  // --- 6. Main Quiz UI ---
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
@@ -97,69 +108,44 @@ const AssessmentPage = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Technical Assessment</h1>
-            <p className="text-gray-500 text-sm">Spring Boot & React Proficiency Test</p>
+            <p className="text-gray-500 text-sm">AI-Generated Questions based on your Resume</p>
           </div>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="bg-white rounded-b-xl shadow-lg overflow-hidden">
           <div className="p-8 space-y-8">
-            {/* Q1 */}
-            <div className="border border-gray-100 rounded-xl p-6 hover:border-indigo-100 transition-colors">
-              <label className="block text-lg font-medium text-gray-900 mb-4">
-                1. What is the default scope of a bean in Spring Boot? <span className="text-red-500">*</span>
-              </label>
-              <div className="space-y-3">
-                {['Prototype', 'Singleton', 'Request', 'Session'].map((opt) => (
-                  <label key={opt} className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-all group">
-                    <input 
-                      type="radio" 
-                      name="q1" 
-                      value={opt}
-                      required
-                      onChange={(e) => setFormData({...formData, q1: e.target.value})}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                    />
-                    <span className="ml-3 text-gray-700 group-hover:text-gray-900">{opt}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            
+            {/* Dynamic Questions Mapping */}
+            {questions.map((q, index) => (
+                <div key={index} className="border border-gray-100 rounded-xl p-6 hover:border-indigo-100 transition-colors">
+                    <label className="block text-lg font-medium text-gray-900 mb-4">
+                        {index + 1}. {q.question} <span className="text-red-500">*</span>
+                    </label>
+                    <div className="space-y-3">
+                        {q.options.map((opt, i) => (
+                            <label 
+                                key={i} 
+                                className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all group ${
+                                    answers[index] === opt ? 'bg-indigo-50 border-indigo-500 ring-1 ring-indigo-500' : 'hover:bg-gray-50 border-gray-200'
+                                }`}
+                            >
+                                <input 
+                                    type="radio" 
+                                    name={`question-${index}`} // Unique name for each question group
+                                    value={opt}
+                                    required
+                                    checked={answers[index] === opt}
+                                    onChange={() => handleOptionSelect(index, opt)}
+                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                                />
+                                <span className="ml-3 text-gray-700 group-hover:text-gray-900">{opt}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+            ))}
 
-            {/* Q2 */}
-            <div className="border border-gray-100 rounded-xl p-6 hover:border-indigo-100 transition-colors">
-              <label className="block text-lg font-medium text-gray-900 mb-4">
-                2. Which of the following are features of React? (Select all that apply)
-              </label>
-              <div className="space-y-3">
-                {['Virtual DOM', 'Two-way Binding (Default)', 'JSX', 'Component-Based'].map((opt) => (
-                  <label key={opt} className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-all group">
-                    <input 
-                      type="checkbox" 
-                      value={opt}
-                      checked={formData.q2.includes(opt)}
-                      onChange={() => handleCheckbox(opt)}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 rounded border-gray-300"
-                    />
-                    <span className="ml-3 text-gray-700 group-hover:text-gray-900">{opt}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Q3 */}
-            <div className="border border-gray-100 rounded-xl p-6 hover:border-indigo-100 transition-colors">
-              <label className="block text-lg font-medium text-gray-900 mb-4">
-                3. Explain how OAuth2 works with Keycloak in your own words. <span className="text-red-500">*</span>
-              </label>
-              <textarea 
-                required
-                rows={5}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow resize-none"
-                placeholder="Type your answer here (min 50 words)..."
-                onChange={(e) => setFormData({...formData, q3: e.target.value})}
-              ></textarea>
-            </div>
           </div>
 
           {/* Footer Actions */}
@@ -173,7 +159,11 @@ const AssessmentPage = () => {
                   : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg'
               }`}
             >
-              {loading ? 'Submitting...' : 'Submit Assessment'}
+              {loading ? (
+                 <span className="flex items-center">
+                    <Loader2 className="animate-spin mr-2" size={20}/> Submitting...
+                 </span>
+              ) : 'Submit Assessment'}
             </button>
           </div>
         </form>

@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Video, Shield, Clock, ArrowRight, PlayCircle } from 'lucide-react';
+import { Video, Shield, Clock, ArrowRight, PlayCircle, FileText, Cpu } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const LandingPage = () => {
@@ -46,19 +46,19 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold tracking-wide uppercase mb-6 border border-indigo-100">
             <span className="w-2 h-2 bg-indigo-500 rounded-full mr-2 animate-pulse"></span>
-            Next-Gen Hiring Platform
+            Now Powered by Gemini AI
           </div>
           
           <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
-            Automate Your <br />
+            Assessment Based on <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-              Technical Interviews
+              Your Resume
             </span>
           </h1>
           
           <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto mb-10">
-            Secure, AI-monitored video assessments and coding quizzes. 
-            Designed for modern engineering teams to filter candidates faster.
+            Upload your PDF resume and let our AI generate a personalized technical assessment instantly. 
+            No more generic tests—showcase what you truly know.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
@@ -70,7 +70,7 @@ const LandingPage = () => {
               <PlayCircle className="ml-2 h-5 w-5" />
             </button>
             <button className="w-full sm:w-auto px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-lg font-bold text-lg hover:bg-gray-50 transition-all flex items-center justify-center">
-              View Demo
+              View AI Demo
             </button>
           </div>
         </div>
@@ -87,10 +87,10 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-              Built for Integrity & Speed
+              Next-Gen Hiring Process
             </h2>
             <p className="mt-4 text-lg text-gray-500">
-              Everything you need to conduct seamless remote technical rounds.
+              From resume parsing to AI evaluation, everything is automated.
             </p>
           </div>
 
@@ -98,33 +98,33 @@ const LandingPage = () => {
             {/* Feature 1 */}
             <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-indigo-100 hover:shadow-xl transition-all group">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors">
-                <Shield className="h-6 w-6 text-blue-600 group-hover:text-white" />
+                <FileText className="h-6 w-6 text-blue-600 group-hover:text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Secure Authentication</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Resume Parsing</h3>
               <p className="text-gray-600 leading-relaxed">
-                Integrated with Keycloak for enterprise-grade OAuth2/OpenID Connect security and role management.
+                We analyze your uploaded PDF to understand your tech stack, experience, and key skills automatically using Apache PDFBox.
               </p>
             </div>
 
             {/* Feature 2 */}
             <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-indigo-100 hover:shadow-xl transition-all group">
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-purple-600 transition-colors">
-                <Video className="h-6 w-6 text-purple-600 group-hover:text-white" />
+                <Cpu className="h-6 w-6 text-purple-600 group-hover:text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Live Video Interface</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">AI Question Generation</h3>
               <p className="text-gray-600 leading-relaxed">
-                Real-time webcam access with built-in recording capabilities (WebRTC) for candidate monitoring.
+                Powered by Google Gemini, our system creates unique, non-repetitive technical questions tailored specifically to your profile.
               </p>
             </div>
 
             {/* Feature 3 */}
             <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-indigo-100 hover:shadow-xl transition-all group">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-6 group-hover:bg-green-600 transition-colors">
-                <Clock className="h-6 w-6 text-green-600 group-hover:text-white" />
+                <Shield className="h-6 w-6 text-green-600 group-hover:text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Timed Assessments</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Secure & Timed</h3>
               <p className="text-gray-600 leading-relaxed">
-                Auto-expiring quizzes and coding challenges that sync directly with our Spring Boot backend.
+                Assessments are time-bound and secured via Keycloak authentication to ensure integrity during the process.
               </p>
             </div>
           </div>
@@ -136,7 +136,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <span className="font-bold text-xl text-white">TalentVisio</span>
-            <p className="text-sm mt-1">© 2024 Secure Assessment Platform.</p>
+            <p className="text-sm mt-1">© 2024 AI Assessment Platform.</p>
           </div>
           <div className="flex space-x-6 text-sm">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
