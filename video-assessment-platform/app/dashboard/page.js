@@ -1,5 +1,5 @@
 "use client";
-
+//this is new 
 import React, { useEffect, useState } from 'react';
 import { Video, FileText, AlertCircle, LogOut, User, Cpu } from 'lucide-react'; // Cpu icon add kiya hai AI feel ke liye
 import { useRouter } from 'next/navigation';
