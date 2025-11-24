@@ -113,7 +113,7 @@ const UploadResumePage = () => {
           className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg transition-all ${
             !file || loading 
             ? 'bg-gray-400 cursor-not-allowed' 
-            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:scale-[1.02]'
+            : 'bg-linear-to-r from-indigo-600 to-purple-600 hover:scale-[1.02]'
           }`}
         >
           {loading ? (

@@ -51,7 +51,7 @@ const LandingPage = () => {
           
           <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
             Assessment Based on <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-purple-600">
               Your Resume
             </span>
           </h1>

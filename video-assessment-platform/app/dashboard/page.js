@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Video, FileText, AlertCircle, LogOut, User } from 'lucide-react';
+import { Video, FileText, AlertCircle, LogOut, User, Cpu } from 'lucide-react'; // Cpu icon add kiya hai AI feel ke liye
 import { useRouter } from 'next/navigation';
 import { getKeycloakInstance } from '../lib/keycloak';
 
@@ -108,14 +108,22 @@ const Dashboard = () => {
              <span className="text-indigo-600 font-bold">Start Session &rarr;</span>
           </div>
           
-          {/* Card 2: Quiz */}
-          <div className="bg-white shadow rounded-lg p-5 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => router.push('/assessment')}>
+          {/* Card 2: Quiz (UPDATED LINK HERE) */}
+          <div 
+            className="bg-white shadow rounded-lg p-5 cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-green-500" 
+            onClick={() => router.push('/upload')} 
+          >
              <div className="flex items-center mb-4">
-                <div className="bg-green-500 p-3 rounded text-white"><FileText /></div>
-                <div className="ml-4"><h3 className="text-lg font-bold">Technical Quiz</h3></div>
+                <div className="bg-green-100 p-3 rounded text-green-600"><Cpu /></div>
+                <div className="ml-4">
+                    <h3 className="text-lg font-bold">AI Skill Assessment</h3>
+                    <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">New</span>
+                </div>
              </div>
-             <p className="text-gray-500 text-sm mb-4">Answer technical questions related to Java and React.</p>
-             <span className="text-green-600 font-bold">Take Assessment &rarr;</span>
+             <p className="text-gray-500 text-sm mb-4">
+                Upload your resume and generate a personalized technical quiz instantly.
+             </p>
+             <span className="text-green-600 font-bold">Start AI Assessment &rarr;</span>
           </div>
         </div>
       </div>
