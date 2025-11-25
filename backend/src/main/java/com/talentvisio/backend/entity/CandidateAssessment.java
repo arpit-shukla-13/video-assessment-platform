@@ -28,6 +28,11 @@ public class CandidateAssessment {
     @Column(columnDefinition = "TEXT")
     private String interviewQuestionsJson;
 
+    @Column(columnDefinition = "TEXT")
+    private String userAnswersJson; // User ne kya select kiya
+
+    private Integer score; // Total Score
+
     // Kab upload kiya gaya
     private LocalDateTime createdAt;
 

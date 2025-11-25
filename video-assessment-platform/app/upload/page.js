@@ -1,8 +1,10 @@
 "use client";
-// Force update for Vercel
+
+// FIX: Backend URL logic for Vercel vs Localhost
+// FIX: Added Console Logs for Debugging
 
 import React, { useState, useEffect } from 'react';
-import { Upload, FileText, CheckCircle, Loader2 } from 'lucide-react';
+import { Upload, FileText, CheckCircle, Loader2, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getKeycloakInstance } from '../lib/keycloak';
 
@@ -13,27 +15,72 @@ const UploadResumePage = () => {
   const [userId, setUserId] = useState(null);
 
   // 1. User ID nikalna Keycloak se
+  // 1. User ID nikalna Keycloak se (CORRECTED VERSION)
+  // 1. User ID nikalna Keycloak se (Smart Check Added)
   useEffect(() => {
     const kc = getKeycloakInstance();
-    // Agar user logged in hai to token se ID ya Email nikal lo
-    if (kc && kc.tokenParsed) {
-      const id = kc.tokenParsed.sub || kc.tokenParsed.preferred_username;
-      setUserId(id);
-    } else {
-        // Fallback agar direct access kiya bina login ke
-        const localToken = localStorage.getItem('user_token');
-        if(!localToken) router.push('/login');
+
+    // Helper function: ID set karne ke liye
+    const setSessionData = () => {
+        if (kc.tokenParsed) {
+            const realUserId = kc.tokenParsed.sub || kc.tokenParsed.preferred_username;
+            console.log("✅ Real User ID Found:", realUserId);
+            setUserId(realUserId);
+        }
+    };
+
+    // CASE A: Agar Keycloak pehle se hi logged in hai (Already Initialized)
+    if (kc.authenticated) {
+        setSessionData();
+        return; // Yahi ruk jao, dobara init mat karo
     }
+
+    // CASE B: Agar Initialize karna zaroori hai
+    kc.init({ onLoad: 'check-sso', pkceMethod: 'S256' })
+      .then((authenticated) => {
+          if (authenticated) {
+              setSessionData();
+          } else {
+              console.log("❌ Not Authenticated - Please Login");
+              // alert("Please login first"); 
+          }
+      })
+      .catch((err) => {
+          // Agar error ye hai ki "Already initialized", toh daro mat, bas data utha lo
+          const errorMsg = err?.message || err?.toString();
+          if (errorMsg.includes('only be initialized once')) {
+              console.log("⚠️ Keycloak already running, grabbing ID...");
+              if (kc.authenticated) {
+                  setSessionData();
+              }
+          } else {
+              console.error("Keycloak Init Error:", err);
+          }
+      });
+
   }, []);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
+      console.log("File Selected:", e.target.files[0].name);
       setFile(e.target.files[0]);
     }
   };
 
   const handleUpload = async () => {
-    if (!file || !userId) return;
+    console.log("--- Upload Button Clicked ---");
+    console.log("File Status:", file ? "Present" : "Missing");
+    console.log("UserID Status:", userId ? userId : "Missing");
+
+    // VALIDATION CHECKS WITH ALERTS
+    if (!file) {
+        alert("Please select a PDF file first!");
+        return;
+    }
+    if (!userId) {
+        alert("User Session not found! Please Login again.");
+        return;
+    }
 
     setLoading(true);
     const formData = new FormData();
@@ -41,31 +88,33 @@ const UploadResumePage = () => {
     formData.append("userId", userId);
 
     try {
-      // Backend API Call (Localhost 8080)
+      // Environment Variable Check
       const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+      console.log("Sending request to:", `${apiBaseUrl}/api/resume/upload`);
+
       const response = await fetch(`${apiBaseUrl}/api/resume/upload`, {
         method: 'POST',
-        body: formData, // Content-Type header mat lagana, browser khud set karega boundary ke saath
+        body: formData,
       });
 
+      console.log("Response Status:", response.status);
+
       if (!response.ok) {
-        throw new Error("Upload Failed");
+        const errorText = await response.text();
+        throw new Error(`Upload Failed: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      console.log("AI Questions Generated:", data);
+      console.log("Success! AI Data:", data);
 
-      // 2. Data ko LocalStorage me save karte hain taaki agle page pe dikha sakein
-      // (Backend me DB me save ho chuka hai, par ye quick access ke liye hai)
       localStorage.setItem('current_assessment_questions', data.aiData);
       localStorage.setItem('current_assessment_id', data.assessmentId);
 
-      // 3. Redirect to Assessment Page
       router.push('/assessment');
 
     } catch (error) {
-      console.error(error);
-      alert("Error processing resume. Make sure Backend is running.");
+      console.error("Upload Error:", error);
+      alert(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -81,8 +130,16 @@ const UploadResumePage = () => {
 
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Upload Your Resume</h1>
         <p className="text-gray-500 mb-8">
-          Our AI will analyze your skills and generate a personalized technical assessment for you.
+          AI-Powered Analysis
         </p>
+
+        {/* Debug Info (Visible on screen for help) */}
+        {!userId && (
+            <div className="mb-4 p-3 bg-yellow-50 text-yellow-700 text-sm rounded flex items-center justify-center">
+                <AlertTriangle size={16} className="mr-2"/>
+                Warning: User ID not found. Try refreshing or logging in again.
+            </div>
+        )}
 
         {/* Upload Box */}
         <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 mb-6 hover:bg-gray-50 transition-colors relative">
@@ -109,17 +166,17 @@ const UploadResumePage = () => {
 
         <button
           onClick={handleUpload}
-          disabled={!file || loading}
+          // Disabled hata diya taaki click karke alert dekh sakein
           className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg transition-all ${
-            !file || loading 
+            loading 
             ? 'bg-gray-400 cursor-not-allowed' 
-            : 'bg-linear-to-r from-indigo-600 to-purple-600 hover:scale-[1.02]'
+            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:scale-[1.02]'
           }`}
         >
           {loading ? (
             <span className="flex items-center justify-center">
               <Loader2 className="animate-spin mr-2" />
-              Analyzing with AI...
+              Analyzing...
             </span>
           ) : (
             "Generate My Assessment"
