@@ -23,9 +23,14 @@ public class GeminiAIService { // Naam Gemini hai, par andar Groq chalega ;)
         try {
             RestTemplate restTemplate = new RestTemplate();
 
+            Random rand = new Random();
+            int min = 5;
+            int max = 15;
+            int questionCount = rand.nextInt((max - min) + 1) + min;
+
             // 1. Prompt
             String prompt = "You are a technical interviewer. Analyze the resume below and generate a JSON object. " +
-                    "Format: { \"technicalQuestions\": [ { \"question\": \"...\", \"options\": [\"...\"], \"correctAnswer\": \"...\" } (5 questions) ], " +
+                    "Format: { \"technicalQuestions\": [ { \"question\": \"...\", \"options\": [\"...\"], \"correctAnswer\": \"...\" } (EXACTLY " + questionCount + " QUESTIONS) ], " +
                     "\"interviewQuestions\": [ \"...\" ] (3 questions) } " +
                     "Strictly JSON only. No markdown. Resume: " + resumeText;
 
@@ -82,12 +87,7 @@ public class GeminiAIService { // Naam Gemini hai, par andar Groq chalega ;)
 
     // --- 🎲 RANDOM BACKUP GENERATOR (Same as before) ---
     private String getRandomMockData() {
-        // ... (Pichla wala 10 sets ka code yahan same rahega) ...
-        // Main space bachane ke liye poora copy nahi kar raha hu, 
-        // par aap pichle code se wo 'List<String> sets...' wala part yahan rakh lena.
-        // Agar wo hata diya hai to batao, main wapas de dunga.
-        
-        // TEMPORARY SMALL BACKUP (Agar aapne pichla delete kar diya ho)
+
         return "{" +
                 "\"technicalQuestions\": [" +
                 "  {\"question\": \"What is the primary purpose of React's Virtual DOM?\", \"options\": [\"Direct DB Access\", \"Optimizing UI updates\", \"Server-side rendering\", \"Memory Management\"], \"correctAnswer\": \"Optimizing UI updates\"}," +
